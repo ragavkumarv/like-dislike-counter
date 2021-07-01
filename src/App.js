@@ -7,6 +7,13 @@ import { Button } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
 import IconButton from "@material-ui/core/IconButton";
 import Card from "@material-ui/core/Card";
+import Badge from "@material-ui/core/Badge";
+import MuiAlert from "@material-ui/lab/Alert";
+import Snackbar from "@material-ui/core/Snackbar";
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 export default function App() {
   const intialPoll = [
@@ -22,13 +29,24 @@ export default function App() {
   const [company, setCompany] = useState("");
   const [color, setColor] = useState("");
   const [content, setContent] = useState("");
-
-  const addContestant = () => setPoll(poll.concat({ company, color, content }));
-
+  const [open, setOpen] = useState(false);
+  const addContestant = () => {
+    setPoll(poll.concat({ company, color, content }));
+    setOpen(true);
+  };
+  localStorage.setItem("theme", "dark");
   // typing -> onChange - trigger -> event.target.value (contains new value)
   // -> setCompany -> company
   // -> setColor -> color
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
 
+    setOpen(false);
+  };
+
+  // +Add -> open is true -> 2000ms or close button -> open is set false
   return (
     <div>
       {/* <TextField id="filled-basic" label="Filled" variant="filled" /> */}
@@ -54,6 +72,12 @@ export default function App() {
           +Add
         </Button>
       </div>
+
+      <Snackbar open={open} autoHideDuration={2000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="success">
+          Successfully Added {company}
+        </Alert>
+      </Snackbar>
 
       <div className="poll">
         {poll.map((detalil) => (
@@ -81,10 +105,10 @@ function Vote({ color, company, content }) {
     <div className="vote-system">
       <Card>
         <h4 style={{ color }}>{company}</h4>
-        <Counter color="orchid" emoji="👍" />
+        <Counter color="orchid" emoji="👍" type="primary" />
         {/* ctrl+/ */}
         {/* Task is to refactor the dislike button using Counter component */}
-        <Counter color="crimson" emoji="👎" />
+        <Counter color="crimson" emoji="👎" type="secondary" />
         <Content content={content} />
       </Card>
     </div>
@@ -129,7 +153,7 @@ function Content({ content }) {
 // 10 > 7 ? 'Awesome' : 'cool';
 
 // function Counter(props) {
-function Counter({ color, emoji }) {
+function Counter({ color, emoji, type }) {
   // Destructure props
   // const {color, emoji} = props;
   const [counter, setCounter] = useState(0); // React hook
@@ -145,7 +169,9 @@ function Counter({ color, emoji }) {
       onClick={() => setCounter(counter + 1)}
     >
       {/* <button style={counterStyles} onClick={() => counter = counter + 1}> */}
-      {emoji} {counter}
+      <Badge badgeContent={counter} color={type}>
+        {emoji}
+      </Badge>
     </IconButton>
   );
 }
