@@ -3,21 +3,27 @@ import "./styles.css";
 
 // jsx - js extended
 // App component
+import { Button } from "@material-ui/core";
+import TextField from "@material-ui/core/TextField";
+import IconButton from "@material-ui/core/IconButton";
+import Card from "@material-ui/core/Card";
+
 export default function App() {
   const intialPoll = [
-    { company: "Apple", color: "white" },
-    { company: "Samsung", color: "skyblue" },
-    { company: "MI", color: "orange" },
-    { company: "Oneplus", color: "red" },
-    { company: "Moto", color: "grey" }
+    { company: "Apple", color: "grey", content: "US based company" },
+    { company: "Samsung", color: "skyblue", content: "Korean based company" },
+    { company: "MI", color: "orange", content: "China based company" },
+    { company: "Oneplus", color: "red", content: "China based company" },
+    { company: "Moto", color: "#000080", content: "US based company" }
   ];
   // react tracking then renders
   const [poll, setPoll] = useState(intialPoll);
 
   const [company, setCompany] = useState("");
   const [color, setColor] = useState("");
+  const [content, setContent] = useState("");
 
-  const addContestant = () => setPoll(poll.concat({ company, color }));
+  const addContestant = () => setPoll(poll.concat({ company, color, content }));
 
   // typing -> onChange - trigger -> event.target.value (contains new value)
   // -> setCompany -> company
@@ -25,27 +31,46 @@ export default function App() {
 
   return (
     <div>
-      <input
-        onChange={(event) => setCompany(event.target.value)}
-        placeholder="Enter company"
-      />
-      {/* BG color must change when you type in the input */}
-      <input
-        style={{ color }}
-        onChange={(event) => setColor(event.target.value)}
-        placeholder="Enter color"
-      />
-      <button onClick={addContestant}>+Add</button>
-      {poll.map((detalil) => (
-        <Vote company={detalil.company} color={detalil.color} />
-      ))}
+      {/* <TextField id="filled-basic" label="Filled" variant="filled" /> */}
+      <div className="vote-form">
+        <TextField
+          variant="outlined"
+          onChange={(event) => setCompany(event.target.value)}
+          label="Enter company"
+        />
+        {/* BG color must change when you type in the input */}
+        <TextField
+          variant="outlined"
+          style={{ backgroundColor: color }}
+          onChange={(event) => setColor(event.target.value)}
+          label="Enter color"
+        />
+        <TextField
+          variant="outlined"
+          onChange={(event) => setContent(event.target.value)}
+          label="Enter content"
+        />
+        <Button onClick={addContestant} variant="outlined" color="primary">
+          +Add
+        </Button>
+      </div>
+
+      <div className="poll">
+        {poll.map((detalil) => (
+          <Vote
+            company={detalil.company}
+            color={detalil.color}
+            content={detalil.content}
+          />
+        ))}
+      </div>
     </div>
   );
 }
 // Vote is child component of App
 // Which is the child component of Vote? Counter & Content
 
-function Vote({ color, company }) {
+function Vote({ color, company, content }) {
   // console.log(props);
   // state - data - likes
   // ternary operator used
@@ -53,13 +78,15 @@ function Vote({ color, company }) {
   const bgStyle = { backgroundColor: "#eee" };
 
   return (
-    <div className="vote-system" style={bgStyle}>
-      <h4 style={{ color }}>{company}</h4>
-      <Counter color="orchid" emoji="👍" />
-      {/* ctrl+/ */}
-      {/* Task is to refactor the dislike button using Counter component */}
-      <Counter color="crimson" emoji="👎" />
-      <Content />
+    <div className="vote-system">
+      <Card>
+        <h4 style={{ color }}>{company}</h4>
+        <Counter color="orchid" emoji="👍" />
+        {/* ctrl+/ */}
+        {/* Task is to refactor the dislike button using Counter component */}
+        <Counter color="crimson" emoji="👎" />
+        <Content content={content} />
+      </Card>
     </div>
   );
 }
@@ -68,15 +95,19 @@ function Vote({ color, company }) {
 // Clue  - Convert color & emoji as props
 // common - counter , different - thumbs up/down, color - green,red
 // First letter must be capital
-function Content() {
+function Content({ content }) {
   const [expanded, setExpanded] = useState(true); // true
   // condtional rendering
   return (
     <div style={{ marginTop: "10px" }}>
-      <button onClick={() => setExpanded(!expanded)}>
+      <Button
+        variant="outlined"
+        color="secondary"
+        onClick={() => setExpanded(!expanded)}
+      >
         Show {expanded ? "Less" : "More"}
-      </button>
-      {expanded ? <p> Add content </p> : ""}
+      </Button>
+      {expanded ? <p> {content} </p> : ""}
     </div>
   );
 }
@@ -108,10 +139,14 @@ function Counter({ color, emoji }) {
     color
   };
   return (
-    <button style={counterStyles} onClick={() => setCounter(counter + 1)}>
+    <IconButton
+      size="large"
+      style={counterStyles}
+      onClick={() => setCounter(counter + 1)}
+    >
       {/* <button style={counterStyles} onClick={() => counter = counter + 1}> */}
       {emoji} {counter}
-    </button>
+    </IconButton>
   );
 }
 
