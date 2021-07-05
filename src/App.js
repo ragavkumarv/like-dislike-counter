@@ -10,12 +10,16 @@ import Card from "@material-ui/core/Card";
 import Badge from "@material-ui/core/Badge";
 import MuiAlert from "@material-ui/lab/Alert";
 import Snackbar from "@material-ui/core/Snackbar";
+import { Link, Route, Switch, Redirect, useHistory } from "react-router-dom";
+import Toolbar from "@material-ui/core/Toolbar";
+import AppBar from "@material-ui/core/AppBar";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
 export default function App() {
+  const history = useHistory();
   const intialPoll = [
     { company: "Apple", color: "grey", content: "US based company" },
     { company: "Samsung", color: "skyblue", content: "Korean based company" },
@@ -34,7 +38,6 @@ export default function App() {
     setPoll(poll.concat({ company, color, content }));
     setOpen(true);
   };
-  localStorage.setItem("theme", "dark");
   // typing -> onChange - trigger -> event.target.value (contains new value)
   // -> setCompany -> company
   // -> setColor -> color
@@ -49,48 +52,132 @@ export default function App() {
   // +Add -> open is true -> 2000ms or close button -> open is set false
   return (
     <div>
-      {/* <TextField id="filled-basic" label="Filled" variant="filled" /> */}
-      <div className="vote-form">
-        <TextField
-          variant="outlined"
-          onChange={(event) => setCompany(event.target.value)}
-          label="Enter company"
-        />
-        {/* BG color must change when you type in the input */}
-        <TextField
-          variant="outlined"
-          style={{ backgroundColor: color }}
-          onChange={(event) => setColor(event.target.value)}
-          label="Enter color"
-        />
-        <TextField
-          variant="outlined"
-          onChange={(event) => setContent(event.target.value)}
-          label="Enter content"
-        />
-        <Button onClick={addContestant} variant="outlined" color="primary">
-          +Add
-        </Button>
-      </div>
+      {/* <a href="/detail" >detail</a> */}
 
-      <Snackbar open={open} autoHideDuration={2000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="success">
-          Successfully Added {company}
-        </Alert>
-      </Snackbar>
+      <AppBar position="sticky">
+        <Toolbar>
+          <Button color="inherit">Home</Button>
+          <Link to="/vote">Vote (old path)</Link>
+        </Toolbar>
+      </AppBar>
 
-      <div className="poll">
-        {poll.map((detalil) => (
-          <Vote
-            company={detalil.company}
-            color={detalil.color}
-            content={detalil.content}
-          />
-        ))}
-      </div>
+      <Link to="/">Home</Link>
+      <br />
+      {/* old path */}
+      <Link to="/vote">Vote (old path)</Link>
+      <br />
+      <Link to="/poll">Poll</Link>
+      <br />
+      <Link to="/users">Users</Link>
+      <br />
+      {/* <Link to="/addContestant">Add Contestant</Link>
+      <br /> */}
+      <Link to="/safasdfasdfasdfdf">Some random route</Link>
+      {/* old path -> /vote  new path -> /poll */}
+      <Switch>
+        <Route exact path="/">
+          <Welcome />
+        </Route>
+
+        <Route path="/users">
+          <Users />
+        </Route>
+        <Route path="/vote">
+          <Redirect to="/poll" />
+        </Route>
+        <Route path="/addContestant">
+          <div className="vote-form">
+            <TextField
+              variant="outlined"
+              onChange={(event) => setCompany(event.target.value)}
+              label="Enter company"
+            />
+            {/* BG color must change when you type in the input */}
+            <TextField
+              variant="outlined"
+              style={{ backgroundColor: color }}
+              onChange={(event) => setColor(event.target.value)}
+              label="Enter color"
+            />
+            <TextField
+              variant="outlined"
+              onChange={(event) => setContent(event.target.value)}
+              label="Enter content"
+            />
+            <Button onClick={addContestant} variant="outlined" color="primary">
+              +Add
+            </Button>
+          </div>
+
+          <Snackbar open={open} autoHideDuration={2000} onClose={handleClose}>
+            <Alert onClose={handleClose} severity="success">
+              Successfully Added {company}
+            </Alert>
+          </Snackbar>
+        </Route>
+
+        <Route path="/poll">
+          <div>
+            <Button
+              onClick={() => history.push("/addContestant")}
+              variant="outlined"
+              color="primary"
+            >
+              + Add Contestant
+            </Button>
+            <div className="poll">
+              {poll.map((detalil) => (
+                <Vote
+                  company={detalil.company}
+                  color={detalil.color}
+                  content={detalil.content}
+                />
+              ))}
+            </div>
+          </div>
+        </Route>
+        <Route path="/*">
+          <PageNotFound />
+        </Route>
+      </Switch>
     </div>
   );
 }
+
+function PageNotFound() {
+  return (
+    <div>
+      <img
+        height="500"
+        src="http://www.digitalmesh.com/blog/wp-content/uploads/2020/05/404-error.jpg"
+      />
+    </div>
+  );
+}
+
+function Users() {
+  const history = useHistory();
+  return (
+    <div>
+      <Button
+        onClick={() => history.goBack()}
+        variant="outlined"
+        color="primary"
+      >
+        🔙 Go back
+      </Button>
+      <p> User details </p>
+    </div>
+  );
+}
+
+// if(som)
+// if(som)
+// if(som)
+function Welcome() {
+  return <div>Welcome to the Awesome app!!!!</div>;
+}
+
 // Vote is child component of App
 // Which is the child component of Vote? Counter & Content
 
