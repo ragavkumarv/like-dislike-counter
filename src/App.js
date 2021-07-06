@@ -5,14 +5,22 @@ import "./styles.css";
 // App component
 import { Button } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
-import IconButton from "@material-ui/core/IconButton";
-import Card from "@material-ui/core/Card";
-import Badge from "@material-ui/core/Badge";
 import MuiAlert from "@material-ui/lab/Alert";
 import Snackbar from "@material-ui/core/Snackbar";
-import { Link, Route, Switch, Redirect, useHistory } from "react-router-dom";
+import {
+  Link,
+  Route,
+  Switch,
+  Redirect,
+  useHistory,
+  useParams
+} from "react-router-dom";
 import Toolbar from "@material-ui/core/Toolbar";
 import AppBar from "@material-ui/core/AppBar";
+import { PageNotFound } from "./PageNotFound";
+import { Users } from "./Users";
+import { Welcome } from "./Welcome";
+import { Vote } from "./Vote";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -56,23 +64,45 @@ export default function App() {
 
       <AppBar position="sticky">
         <Toolbar>
-          <Button color="inherit">Home</Button>
-          <Link to="/vote">Vote (old path)</Link>
+          <Button onClick={() => history.push("/")} color="inherit">
+            Home
+          </Button>
+          <Button onClick={() => history.push("/vote")} color="inherit">
+            Vote (old path)
+          </Button>
+          <Button onClick={() => history.push("/poll")} color="inherit">
+            Poll
+          </Button>
+          <Button onClick={() => history.push("/users")} color="inherit">
+            Users
+          </Button>
+          <Button
+            onClick={() => history.push("/addContestant")}
+            color="inherit"
+          >
+            Users
+          </Button>
+          <Button
+            onClick={() => history.push("/safasdfasdfasdfdf")}
+            color="inherit"
+          >
+            Some random route
+          </Button>
         </Toolbar>
       </AppBar>
 
-      <Link to="/">Home</Link>
-      <br />
+      {/* <Link to="/">Home</Link>
+      <br /> */}
       {/* old path */}
-      <Link to="/vote">Vote (old path)</Link>
+      {/* <Link to="/vote">Vote (old path)</Link>
       <br />
       <Link to="/poll">Poll</Link>
       <br />
       <Link to="/users">Users</Link>
-      <br />
+      <br /> */}
       {/* <Link to="/addContestant">Add Contestant</Link>
       <br /> */}
-      <Link to="/safasdfasdfasdfdf">Some random route</Link>
+      {/* <Link to="/safasdfasdfasdfdf">Some random route</Link> */}
       {/* old path -> /vote  new path -> /poll */}
       <Switch>
         <Route exact path="/">
@@ -136,6 +166,9 @@ export default function App() {
             </div>
           </div>
         </Route>
+        <Route path="/:name">
+          <CompanyDetail />
+        </Route>
         <Route path="/*">
           <PageNotFound />
         </Route>
@@ -144,137 +177,11 @@ export default function App() {
   );
 }
 
-function PageNotFound() {
+function CompanyDetail() {
+  const { name } = useParams();
   return (
     <div>
-      <img
-        height="500"
-        src="http://www.digitalmesh.com/blog/wp-content/uploads/2020/05/404-error.jpg"
-      />
+      <p> Company Detail of {name}</p>
     </div>
   );
 }
-
-function Users() {
-  const history = useHistory();
-  return (
-    <div>
-      <Button
-        onClick={() => history.goBack()}
-        variant="outlined"
-        color="primary"
-      >
-        🔙 Go back
-      </Button>
-      <p> User details </p>
-    </div>
-  );
-}
-
-// if(som)
-// if(som)
-// if(som)
-function Welcome() {
-  return <div>Welcome to the Awesome app!!!!</div>;
-}
-
-// Vote is child component of App
-// Which is the child component of Vote? Counter & Content
-
-function Vote({ color, company, content }) {
-  // console.log(props);
-  // state - data - likes
-  // ternary operator used
-  // const bgStyle = { backgroundColor: likes >= dislikes ? "green" : "crimson" };
-  const bgStyle = { backgroundColor: "#eee" };
-
-  return (
-    <div className="vote-system">
-      <Card>
-        <h4 style={{ color }}>{company}</h4>
-        <Counter color="orchid" emoji="👍" type="primary" />
-        {/* ctrl+/ */}
-        {/* Task is to refactor the dislike button using Counter component */}
-        <Counter color="crimson" emoji="👎" type="secondary" />
-        <Content content={content} />
-      </Card>
-    </div>
-  );
-}
-
-// DRY - Dont Repeat Yourself
-// Clue  - Convert color & emoji as props
-// common - counter , different - thumbs up/down, color - green,red
-// First letter must be capital
-function Content({ content }) {
-  const [expanded, setExpanded] = useState(true); // true
-  // condtional rendering
-  return (
-    <div style={{ marginTop: "10px" }}>
-      <Button
-        variant="outlined"
-        color="secondary"
-        onClick={() => setExpanded(!expanded)}
-      >
-        Show {expanded ? "Less" : "More"}
-      </Button>
-      {expanded ? <p> {content} </p> : ""}
-    </div>
-  );
-}
-
-//1. Task
-// Each company different content
-// Adding company you add with a content
-
-//2. Task
-// Build show more recipe
-// map - loop all the recipes
-// Add recipes
-
-// Show More -> Show Less -> Show More
-// expanded === true ? false : true;
-// !expanded
-// true -> click -> false -> click -> true ....
-
-// 10 > 7 ? 'Awesome' : 'cool';
-
-// function Counter(props) {
-function Counter({ color, emoji, type }) {
-  // Destructure props
-  // const {color, emoji} = props;
-  const [counter, setCounter] = useState(0); // React hook
-  const counterStyles = {
-    fontSize: "25px",
-    fontWeight: "bold",
-    color
-  };
-  return (
-    <IconButton
-      size="large"
-      style={counterStyles}
-      onClick={() => setCounter(counter + 1)}
-    >
-      {/* <button style={counterStyles} onClick={() => counter = counter + 1}> */}
-      <Badge badgeContent={counter} color={type}>
-        {emoji}
-      </Badge>
-    </IconButton>
-  );
-}
-
-// Task
-// BackgroundColor app should be green if same or more number of likes are present,
-// If more dislikes then backgroundColor of app is red
-
-// React - (document. dont use)
-// document.querySelector()
-// jsx - will be converted in to JS by React
-// className - class in keyword
-
-// Task
-// Create Recipe app (5)
-// Img
-// title
-// Ings
-// Prep step
