@@ -4,6 +4,7 @@
 }
 
 .poll {
+  margin-top: 10px;
   display: grid;
   gap: 15px;
   grid-template-columns: 1fr;
@@ -17,14 +18,29 @@
 /* fr - ratio */
 /* min-with - yes, max-width -no */
 
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.action-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  /* on top of each other */
+  /* justify-content: space-between; */
+}
+
+/* Bigger screen */
 @media (min-width: 600px) {
   .poll {
     grid-template-columns: repeat(3, 1fr);
     /* grid-template-columns: 1fr 1fr 1fr; */
   }
-}
 
-body {
-  margin: 0;
-  padding: 0;
+  .action-bar {
+    /* side by side */
+    flex-direction: row;
+    justify-content: space-between;
+  }
 }

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./styles.css";
 
 // jsx - js extended
@@ -7,6 +7,7 @@ import { Button } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
 import MuiAlert from "@material-ui/lab/Alert";
 import Snackbar from "@material-ui/core/Snackbar";
+import InputAdornment from "@material-ui/core/InputAdornment";
 import {
   Link,
   Route,
@@ -22,25 +23,48 @@ import { Users } from "./Users";
 import { Welcome } from "./Welcome";
 import { Vote } from "./Vote";
 
+const ALL_COMPANY_DETAILS = [
+  { id: "6", company: "Apple", color: "grey", content: "US based company" },
+  {
+    id: "2",
+    company: "Samsung",
+    color: "skyblue",
+    content: "Korean based company"
+  },
+  { id: "3", company: "MI", color: "orange", content: "China based company" },
+  {
+    id: "4",
+    company: "Oneplus",
+    color: "red",
+    content: "China based company"
+  },
+  { id: "5", company: "Moto", color: "#000080", content: "US based company" }
+];
+
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
 export default function App() {
   const history = useHistory();
-  const intialPoll = [
-    { company: "Apple", color: "grey", content: "US based company" },
-    { company: "Samsung", color: "skyblue", content: "Korean based company" },
-    { company: "MI", color: "orange", content: "China based company" },
-    { company: "Oneplus", color: "red", content: "China based company" },
-    { company: "Moto", color: "#000080", content: "US based company" }
-  ];
+  const intialPoll = ALL_COMPANY_DETAILS;
+
+  useEffect(() => {
+    fetch("https://60e2ea469103bd0017b47652.mockapi.io/recipe", {
+      method: "GET"
+    })
+      .then((data) => data.json())
+      .then((result) => setPoll(result))
+      .catch((err) => setPoll(intialPoll));
+  }, []);
+
   // react tracking then renders
-  const [poll, setPoll] = useState(intialPoll);
+  const [poll, setPoll] = useState([]);
 
   const [company, setCompany] = useState("");
   const [color, setColor] = useState("");
   const [content, setContent] = useState("");
+  const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
   const addContestant = () => {
     setPoll(poll.concat({ company, color, content }));
@@ -147,26 +171,45 @@ export default function App() {
         </Route>
 
         <Route path="/poll">
-          <div>
-            <Button
-              onClick={() => history.push("/addContestant")}
-              variant="outlined"
-              color="primary"
-            >
-              + Add Contestant
-            </Button>
+          <div style={{ padding: "10px" }}>
+            <div className="action-bar">
+              <TextField
+                label="Search"
+                id="outlined-start-adornment"
+                onChange={(event) => setSearch(event.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">🔍</InputAdornment>
+                  )
+                }}
+                variant="outlined"
+              />
+              <Button
+                onClick={() => history.push("/addContestant")}
+                variant="outlined"
+                color="primary"
+                // style={{ float: "right" }}
+              >
+                + Add Contestant
+              </Button>
+            </div>
             <div className="poll">
-              {poll.map((detalil) => (
-                <Vote
-                  company={detalil.company}
-                  color={detalil.color}
-                  content={detalil.content}
-                />
-              ))}
+              {poll
+                .filter((data) =>
+                  data.company.toLowerCase().includes(search.toLowerCase())
+                )
+                .map((detail) => (
+                  <Vote
+                    id={detail.id}
+                    company={detail.company}
+                    color={detail.color}
+                    content={detail.content}
+                  />
+                ))}
             </div>
           </div>
         </Route>
-        <Route path="/:name">
+        <Route path="/:companyid">
           <CompanyDetail />
         </Route>
         <Route path="/*">
@@ -178,10 +221,62 @@ export default function App() {
 }
 
 function CompanyDetail() {
-  const { name } = useParams();
+  const { companyid } = useParams();
+  //   // ALL_COMPANY_DETAILS
+  // console.log( "filter",  ALL_COMPANY_DETAILS.filter( detail => detail.id ===  companyid) )
+  // console.log( "find", ALL_COMPANY_DETAILS.find( detail => detail.id ===  companyid) )
+  const contestant = ALL_COMPANY_DETAILS.find(
+    (detail) => detail.id === companyid
+  );
+  // api call - Get call with filter companyid
   return (
     <div>
-      <p> Company Detail of {name}</p>
+      <h1> {contestant.company} </h1>
+      <p> {contestant.content} </p>
     </div>
   );
 }
+
+const all = [
+  { id: "6", company: "Apple", color: "grey", content: "US based company" },
+  {
+    id: "2",
+    company: "Samsung",
+    color: "skyblue",
+    content: "Korean based company"
+  },
+  { id: "3", company: "MI", color: "orange", content: "China based company" },
+  {
+    id: "4",
+    company: "Oneplus",
+    color: "red",
+    content: "China based company"
+  },
+  { id: "5", company: "Moto", color: "#000080", content: "US based company" }
+];
+
+const search = "O";
+// filter | includes string<method> (common method (used on arrarys & strings))
+
+console.log(all.filter((data) => data.company.includes(search)));
+
+// output
+// [
+//   { id: "6", company: "Apple", color: "grey", content: "US based company" }
+// ]
+
+// const search = "m";
+
+// // output
+// [{ id: "3", company: "MI", color: "orange", content: "China based company" },
+// { id: "5", company: "Moto", color: "#000080", content: "US based company" },
+// {
+//   id: "2",
+//   company: "Samsung",
+//   color: "skyblue",
+//   content: "Korean based company"
+// }
+// ];
+
+// Task
+// Search feature & Routing to Recipe detail

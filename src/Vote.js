@@ -5,7 +5,7 @@ import { useHistory } from "react-router-dom";
 
 // Vote is child component of App
 // Which is the child component of Vote? Counter & Content
-export function Vote({ color, company, content }) {
+export function Vote({ color, company, content, id }) {
   // console.log(props);
   // state - data - likes
   // ternary operator used
@@ -16,13 +16,14 @@ export function Vote({ color, company, content }) {
   const history = useHistory();
   return (
     <div className="vote-system">
-      <Card
-        style={{ cursor: "pointer" }}
-        onClick={() => history.push(`/${company}`)}
-      >
-        <h4 style={{ color }}>{company}</h4>
+      <Card>
+        <h4
+          onClick={() => history.push(`/${id}`)}
+          style={{ color, cursor: "pointer" }}
+        >
+          {company}
+        </h4>
         <Counter color="orchid" emoji="👍" type="primary" />
-
         <Counter color="crimson" emoji="👎" type="secondary" />
         <Content content={content} />
       </Card>
