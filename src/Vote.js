@@ -25,6 +25,7 @@ export function Vote({ color, company, content, id }) {
         </h4>
         <Counter color="orchid" emoji="👍" type="primary" />
         <Counter color="crimson" emoji="👎" type="secondary" />
+
         <Content content={content} />
       </Card>
     </div>
