@@ -18,7 +18,7 @@ export function Vote({ color, company, content, id }) {
     <div className="vote-system">
       <Card>
         <h4
-          onClick={() => history.push(`/${id}`)}
+          onClick={() => history.push(`/poll/${id}`)}
           style={{ color, cursor: "pointer" }}
         >
           {company}

@@ -50,7 +50,7 @@ export default function App() {
   const intialPoll = ALL_COMPANY_DETAILS;
 
   useEffect(() => {
-    fetch("https://60e2ea469103bd0017b47652.mockapi.io/recipe", {
+    fetch("https://60c98aa8772a760017203b57.mockapi.io/poll", {
       method: "GET"
     })
       .then((data) => data.json())
@@ -98,12 +98,6 @@ export default function App() {
             Poll
           </Button>
           <Button onClick={() => history.push("/users")} color="inherit">
-            Users
-          </Button>
-          <Button
-            onClick={() => history.push("/addContestant")}
-            color="inherit"
-          >
             Users
           </Button>
           <Button
@@ -170,7 +164,7 @@ export default function App() {
           </Snackbar>
         </Route>
 
-        <Route path="/poll">
+        <Route exact path="/poll">
           <div style={{ padding: "10px" }}>
             <div className="action-bar">
               <TextField
@@ -209,7 +203,7 @@ export default function App() {
             </div>
           </div>
         </Route>
-        <Route path="/:companyid">
+        <Route path="/poll/:companyid">
           <CompanyDetail />
         </Route>
         <Route path="/*">
