@@ -5,26 +5,40 @@ import Snackbar from "@material-ui/core/Snackbar";
 import { Alert } from "./App";
 import { useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
+// npm install @hookform/resolvers yup - locally
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+
+const ContestantSchema = yup.object().shape({
+  company: yup
+    .string()
+    .required("⚠️ Provide your company name")
+    .min(3)
+    .max(10, "Keep it short"),
+  color: yup.string().required(),
+  content: yup.string().required().min(10)
+});
 
 export function AddContestant() {
-  const [company, setCompany] = useState("");
-  const [color, setColor] = useState("");
-  const [content, setContent] = useState("");
-  const { register, handleSubmit } = useForm();
+  const {
+    register,
+    handleSubmit,
+    getValues,
+    formState: { errors }
+  } = useForm({
+    resolver: yupResolver(ContestantSchema)
+  });
   const [open, setOpen] = useState(false);
   const history = useHistory();
-  const addContestant = () => {
-    // setPoll(poll.concat({ company, color, content }));
+  const addContestant = (data) => {
+    console.log("form data", data);
+    setOpen(true);
     fetch("https://60c98aa8772a760017203b57.mockapi.io/poll", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({
-        company,
-        color,
-        content
-      })
+      body: JSON.stringify(data)
     })
       .then((data) => data.json())
       .then((data) => console.log(data))
@@ -43,34 +57,46 @@ export function AddContestant() {
 
     setOpen(false);
   };
+
   return (
-    <div>
+    <div style={{ padding: "10px" }}>
       <div className="vote-form">
         <TextField
           variant="outlined"
-          // onChange={(event) => setCompany(event.target.value)}
+          {...register("company")}
+          error={errors.company} // red color
+          helperText={errors.company && errors.company.message}
           label="Enter company"
         />
-
         <TextField
           variant="outlined"
-          style={{ backgroundColor: color }}
-          // onChange={(event) => setColor(event.target.value)}
+          style={{ backgroundColor: getValues("color") }}
+          {...register("color")}
+          error={errors.color}
+          helperText={errors.color && errors.color.message}
           label="Enter color"
         />
         <TextField
           variant="outlined"
-          onChange={(event) => setContent(event.target.value)}
+          {...register("content")}
+          error={errors.content}
+          // multiline
+          // rows={4}
+          helperText={errors.content && errors.content.message}
           label="Enter content"
         />
-        <Button onClick={addContestant} variant="outlined" color="primary">
+        <Button
+          onClick={handleSubmit(addContestant)}
+          variant="outlined"
+          color="primary"
+        >
           +Add
         </Button>
       </div>
 
       <Snackbar open={open} autoHideDuration={2000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="success">
-          Successfully Added {company}
+          Successfully Added {getValues("company")}
         </Alert>
       </Snackbar>
     </div>
