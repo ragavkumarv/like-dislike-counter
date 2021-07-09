@@ -13,6 +13,7 @@ import { Welcome } from "./Welcome";
 import { AddContestant } from "./AddContestant";
 import { Poll } from "./Poll";
 import { CompanyDetail } from "./CompanyDetail";
+import { EditContestant } from "./EditContestant";
 
 export const ALL_COMPANY_DETAILS = [
   { id: "6", company: "Apple", color: "grey", content: "US based company" },
@@ -40,7 +41,7 @@ export default function App() {
   const history = useHistory();
   // +Add -> open is true -> 2000ms or close button -> open is set false
   return (
-    <div>
+    <>
       {/* <a href="/detail" >detail</a> */}
 
       <AppBar position="sticky">
@@ -98,14 +99,19 @@ export default function App() {
           {/* Changing the route cause the component to get detroyed & recreated */}
           <Poll />
         </Route>
+        {/* Contestant detail */}
         <Route path="/poll/:companyid">
           <CompanyDetail />
+        </Route>
+        {/* `/editContestant/${detail.id}` */}
+        <Route path="/editContestant/:companyid">
+          <EditContestant />
         </Route>
         <Route path="/*">
           <PageNotFound />
         </Route>
       </Switch>
-    </div>
+    </>
   );
 }
 

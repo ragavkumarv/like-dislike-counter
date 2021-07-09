@@ -15,6 +15,8 @@ export function CompanyDetail() {
 
   useEffect(() => {
     loadContestantDetails(companyid);
+
+    return () => console.log(`Bye from company details`);
   }, []);
 
   function loadContestantDetails(id) {

@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom";
 export function Users() {
   const history = useHistory();
   return (
-    <div>
+    <>
       <Button
         onClick={() => history.goBack()}
         variant="outlined"
@@ -20,6 +20,12 @@ export function Users() {
         Go Forward
       </Button>
       <p> User details </p>
-    </div>
+    </>
   );
+}
+
+// React fragment
+{
+  /* <>
+</> */
 }

@@ -63,26 +63,26 @@ export function AddContestant() {
       <div className="vote-form">
         <TextField
           variant="outlined"
-          {...register("company")}
-          error={errors.company} // red color
-          helperText={errors.company && errors.company.message}
+          {...register("company")} // onChange, onClick, onFocus - access
+          error={errors?.company?.message} // red color
+          helperText={errors?.company?.message}
           label="Enter company"
         />
         <TextField
           variant="outlined"
           style={{ backgroundColor: getValues("color") }}
           {...register("color")}
-          error={errors.color}
+          error={errors?.color?.message}
           helperText={errors.color && errors.color.message}
           label="Enter color"
         />
         <TextField
           variant="outlined"
           {...register("content")}
-          error={errors.content}
+          error={errors?.content?.message}
           // multiline
           // rows={4}
-          helperText={errors.content && errors.content.message}
+          helperText={errors?.content?.message}
           label="Enter content"
         />
         <Button
@@ -105,3 +105,7 @@ export function AddContestant() {
 
 // .then((result) => setPoll(result))
 // .catch((err) => setPoll(intialPoll))
+
+// if( errors.color && error.color.message){
+//   errors = error.color.message
+// }

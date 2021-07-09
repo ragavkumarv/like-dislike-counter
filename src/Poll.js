@@ -73,6 +73,14 @@ export function Poll() {
               >
                 Delete
               </Button>
+              <Button
+                variant="outlined"
+                color="secondary"
+                onClick={() => history.push(`/editContestant/${detail.id}`)}
+              >
+                Edit
+              </Button>
+              {/* /editContestant/:id */}
               <Vote
                 // It increases reacts performance
                 key={detail.id} // unique
@@ -91,3 +99,5 @@ export function Poll() {
 // freeze -> look is deleted
 // Mohammed - delete - fb - deleted - 'Yes'
 // Mohammed - deleted - 'No'
+
+// histroy - browser
