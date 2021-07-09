@@ -44,3 +44,10 @@ body {
     justify-content: space-between;
   }
 }
+
+.user-list {
+  display: grid;
+  gap: 10px;
+  padding: 10px;
+  place-content: center;
+}

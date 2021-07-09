@@ -66,23 +66,27 @@ export function Poll() {
           )
           .map((detail) => (
             <div>
-              <Button
-                variant="outlined"
-                color="secondary"
-                onClick={() => deleteContestant(detail.id)}
-              >
-                Delete
-              </Button>
-              <Button
-                variant="outlined"
-                color="secondary"
-                onClick={() => history.push(`/editContestant/${detail.id}`)}
-              >
-                Edit
-              </Button>
               {/* /editContestant/:id */}
               <Vote
                 // It increases reacts performance
+                delete={
+                  <Button
+                    variant="outlined"
+                    color="secondary"
+                    onClick={() => deleteContestant(detail.id)}
+                  >
+                    Delete
+                  </Button>
+                }
+                edit={
+                  <Button
+                    variant="outlined"
+                    color="secondary"
+                    onClick={() => history.push(`/editContestant/${detail.id}`)}
+                  >
+                    Edit
+                  </Button>
+                }
                 key={detail.id} // unique
                 id={detail.id}
                 company={detail.company}
